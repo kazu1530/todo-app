@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+       
+    <meta charset="UTF-8">
+       
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>full stcak1</title>
+</head>
+
+<body>
+        <h1>mytodo</h1>
+        <input id="box" placeholder="input tasks to do">
+        <button onclick="add()">add</button>
+        <ul id="list"></ul>
+
+       
+    <script>
+        function show() {
+            fetch("http://localhost:3000")
+
+                .then(res => res.json())
+                .then(items => {
+
+                    const list = document.getElementById("list");
+                    list.innerHTML = "";
+
+
+                    items.forEach(item => {
+                        const li = document.createElement("li");
+
+                        const chk = document.createElement("input");
+                        chk.type = "checkbox";
+                        chk.checked = item.completed;
+                        chk.onclick = function () { toggle(item.id); };
+                        li.appendChild(chk);
+
+                        const span = document.createElement("span");
+                        span.textContent = " " + item.text + " ";
+                        if (item.completed) span.style.textDecoration = "line-through";
+                        li.appendChild(span);
+
+                        const btn = document.createElement("button");
+                        btn.textContent = "delete";
+                        btn.onclick = function () { remove(item.id); };
+                        li.appendChild(btn);
+
+                        list.appendChild(li);
+                    });
+                });
+        }
+
+
+
+        function add() {
+            const text = document.getElementById("box").value;
+            fetch("http://localhost:3000", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: text })
+            }).then(() => {
+                show();
+                document.getElementById("box").value = "";
+            });
+        }
+
+
+
+        function remove(id) {
+            fetch("http://localhost:3000", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: id })
+            }).then(() => {
+                show();
+            });
+        }
+
+        function toggle(id) {
+            fetch("http://localhost:3000", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: id })
+            }).then(() => {
+                show();
+            });
+        }
+
+
+        show();
+    </script>
+</body>
+
+</html>
