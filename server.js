@@ -5,9 +5,10 @@ const { Pool } = require('pg');
 
 
 const app = express();
+
+
 app.use(cors());
 app.use(express.json());
-
 app.use(express.static(__dirname));
 
 const pool = new Pool({
@@ -26,37 +27,6 @@ async function initDB() {
     `);
 }
 initDB();
-
-
-
-
-const fs = require("fs");
-const FILE_PATH = "todos.json";
-
-function loadTodos() {
-    if (!fs.existsSync(FILE_PATH)) {
-        return [];
-    }
-    return JSON.parse(fs.readFileSync(FILE_PATH, "utf-8"));
-}
-function saveTodos(todos) {
-    fs.writeFileSync(FILE_PATH, JSON.stringify(todos, null, 2), "utf-8");
-}
-let todos = loadTodos();
-
-
-app.use(express.json());
-app.use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
-
-    if (req.method === "OPTIONS") {
-        return res.sendStatus(200);
-    }
-    next();
-});
 
 
 
