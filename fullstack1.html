@@ -18,7 +18,7 @@
        
     <script>
         function show() {
-            fetch("http://localhost:3000")
+            fetch("/todos")
 
                 .then(res => res.json())
                 .then(items => {
@@ -55,7 +55,7 @@
 
         function add() {
             const text = document.getElementById("box").value;
-            fetch("http://localhost:3000", {
+            fetch("/todos", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ text: text })
@@ -68,7 +68,7 @@
 
 
         function remove(id) {
-            fetch("http://localhost:3000", {
+            fetch("/todos", {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id: id })
@@ -78,7 +78,7 @@
         }
 
         function toggle(id) {
-            fetch("http://localhost:3000", {
+            fetch("/todos", {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id: id })

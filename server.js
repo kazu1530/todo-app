@@ -8,6 +8,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.use(express.static(__dirname));
+
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false }
@@ -24,6 +26,7 @@ async function initDB() {
     `);
 }
 initDB();
+
 
 
 
@@ -57,7 +60,7 @@ app.use((req, res, next) => {
 
 
 
-app.get('/', async (req, res) => {
+app.get('/todos', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM todos ORDER BY id ASC');
         res.json(result.rows);
@@ -67,7 +70,7 @@ app.get('/', async (req, res) => {
 });
 
 
-app.post('/', async (req, res) => {
+app.post('/todos', async (req, res) => {
     try {
         const { text } = req.body;
         const result = await pool.query(
@@ -83,7 +86,7 @@ app.post('/', async (req, res) => {
 
 
 
-app.delete('/', async (req, res) => {
+app.delete('/todos', async (req, res) => {
     try {
         const { id } = req.body;
         await pool.query('DELETE FROM todos WHERE id = $1', [id]);
@@ -94,7 +97,7 @@ app.delete('/', async (req, res) => {
 });
 
 
-app.patch('/', async (req, res) => {
+app.patch('/todos', async (req, res) => {
     try {
         const { id } = req.body;
         await pool.query(
@@ -107,7 +110,7 @@ app.patch('/', async (req, res) => {
     }
 });
 
-
-app.listen(3000, () => {
-    console.log("Server running at http://localhost:3000/");
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log('Server running on port ${PORT}');
 });
